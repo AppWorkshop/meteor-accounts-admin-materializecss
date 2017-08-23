@@ -11,16 +11,16 @@ Package.describe({
 Package.on_use(function (api, where) {
   api.versionsFrom("1.3");
 	api.use([
+			"ecmascript",
 			"alanning:roles@1.2.8",
 			'coffeescript',
 			'templating',
 			'check',
 			'underscore',
 			'logging',
-      'ecmascript',
-      'aslagle:reactive-table',
-      'softwarerero:accounts-t9n@1.1.4'],
-		['client', 'server']);
+			'softwarerero:accounts-t9n@1.1.4'],
+		['client',
+			'server']);
 	api.use(['session'],['client']);
 
   var path = Npm.require('path');
