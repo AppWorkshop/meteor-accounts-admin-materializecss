@@ -90,7 +90,7 @@ Template.updateAccountModalInner.events({
     });
   },
   'click .modal-close': function(event, template) {
-    $('#updateaccount').closeModal();
+    $('#updateaccount').modal('close');
   }
 });
 

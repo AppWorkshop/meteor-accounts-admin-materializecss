@@ -57,20 +57,20 @@ Template.accountsAdmin.events({
 
   'click .removebtn': function (event, template) {
     Session.set('userInScope', this);
-    $('#deleteaccount').openModal();
+    $('#deleteaccount').modal('open');
   },
 
   'click .infobtn': function (event, template) {
     Session.set('userInScope', this);
-    $('#infoaccount').openModal();
+    $('#infoaccount').modal('open');
   },
 
   'click .editbtn': function (event, template) {
     Session.set('userInScope', this);
-    $('#updateaccount').openModal();
+    $('#updateaccount').modal('open');
   },
   'click #updaterolesbtn': function(event, template) {
-    $('#updateroles').openModal();
+    $('#updateroles').modal('open');
   }
 });
 
@@ -98,4 +98,8 @@ Template.accountsAdmin.onRendered(function () {
 
   searchElement[0].focus();
   searchElement[0].setSelectionRange(pos, pos);
+  $('#deleteaccount').modal();
+  $('#infoaccount').modal();
+  $('#updateaccount').modal();
+  $('#updateroles').modal();  
 });

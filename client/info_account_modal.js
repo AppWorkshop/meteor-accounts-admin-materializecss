@@ -41,6 +41,6 @@ Template.infoAccountModalInner.helpers({
 
 Template.infoAccountModalInner.events({
   'click .modal-close': function (event, template) {
-    $('#infoaccount').closeModal();
+    $('#infoaccount').modal('close');
   }
 });

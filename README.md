@@ -235,6 +235,15 @@ var canIAdminister = RolesTree.isUserCanAdministerUser(Meteor.userId(),"baddeadb
 
 ## History
 
+**Version:** 0.4.0
+- updated modals for breaking changes in materialize v0.100.1
+
+**Version:** 0.3.1
+- Add RolesTree package-scoped var.
+- Update for meteor 1.5.1 and juto:config - Initialize on Meteor.startup explicitly set global.RolesTree
+- Filter on all fields specified in RolesTree 'visibleUserFields' property
+
+
 **Version:** 0.3.0
 - Filter on all fields specified in RolesTree 'visibleUserFields' property.
 
