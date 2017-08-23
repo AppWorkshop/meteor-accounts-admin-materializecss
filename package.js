@@ -13,8 +13,8 @@ Package.on_use(function (api, where) {
 	api.use([
 			"ecmascript",
 			"alanning:roles@1.2.8",
-			'coffeescript',
-			'templating',
+			'coffeescript@1.0.17',
+			'templating@1.1.14',
 			'check',
 			'underscore',
 			'logging',
