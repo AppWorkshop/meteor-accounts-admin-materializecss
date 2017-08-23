@@ -1,3 +1,5 @@
+RolesTree = undefined;
+
 /**
  * Create a new role hierarchy
  * @param {object} jsTree - a tree structure matching the structure:
