@@ -4,12 +4,12 @@ Package.describe({
   // By default, Meteor will default to using README.md for documentation.
   // To avoid submitting documentation, set this field to null.
   documentation: 'README.md',
-  version: "0.3.0",
+  version: "0.3.1",
   name: "cunneen:accounts-admin-materializecss"
 });
 
 Package.on_use(function (api, where) {
-  api.versionsFrom("METEOR@0.9.0");
+  api.versionsFrom("1.3");
 	api.use([
 			"alanning:roles@1.2.8",
 			'coffeescript',
@@ -17,9 +17,10 @@ Package.on_use(function (api, where) {
 			'check',
 			'underscore',
 			'logging',
-			'softwarerero:accounts-t9n@1.1.4'],
-		['client',
-			'server']);
+      'ecmascript',
+      'aslagle:reactive-table',
+      'softwarerero:accounts-t9n@1.1.4'],
+		['client', 'server']);
 	api.use(['session'],['client']);
 
   var path = Npm.require('path');
@@ -46,4 +47,5 @@ Package.on_use(function (api, where) {
 	api.add_files('server/publish.js', 'server');
 	api.add_files('server/methods.js', 'server');
   api.export('RolesTree', ['client', 'server']);
+  api.export('RolesHierarchy',['client','server']);
 });

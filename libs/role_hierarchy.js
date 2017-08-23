@@ -222,12 +222,17 @@ RolesHierarchy.prototype.copyProfileCriteriaFromUser = function(meteorUser, prof
 
 // client and server
 // if roles hierarchy is defined
-if (Meteor.settings &&
-  Meteor.settings.public &&
-  Meteor.settings.public.accountsAdmin &&
-  Meteor.settings.public.accountsAdmin.rolesHierarchy) {
+Meteor.startup(()=>{
+  if (Meteor.settings &&
+    Meteor.settings.public &&
+    Meteor.settings.public.accountsAdmin &&
+    Meteor.settings.public.accountsAdmin.rolesHierarchy) {
 
-  // build our roles
-  RolesTree = new RolesHierarchy(Meteor.settings.public.accountsAdmin.rolesHierarchy);
+    // build our roles
+    RolesTree = new RolesHierarchy(Meteor.settings.public.accountsAdmin.rolesHierarchy);
 
-}
+    if (Meteor.isServer) {
+      global.RolesTree = RolesTree;
+    }
+  }
+});
