@@ -37,8 +37,8 @@ RolesHierarchy.prototype.findRoleInHierarchy = function (roleName) {
   // is it one of the immediate children of this one?
   if (this.subordinates) {
     let res = false;
-    for (var thisChild in this.subordinates) {
-      res = this.subordinates[thisChild].findRoleInHierarchy(roleName);
+    for (let i = 0; !res && i < this.subordinates.length; i++) {
+      res = this.subordinates[i].findRoleInHierarchy(roleName);
     }
     return res;
   }
