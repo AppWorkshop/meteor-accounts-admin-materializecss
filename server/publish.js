@@ -14,7 +14,7 @@ Meteor.publish('roles', function () {
   return Meteor.roles.find(criteria);
 });
 
-Meteor.publish('filteredUsers', function (searchString, searchCriteriaObject) {
+ReactiveTable.publish('filteredUsers', function (searchString, searchCriteriaObject) {
   check(searchString, Match.OneOf(String, undefined, null));
   check(searchCriteriaObject, Match.OneOf(Object, undefined, null));
 

@@ -18,7 +18,8 @@ Package.on_use(function (api, where) {
 			'check',
 			'underscore',
 			'logging',
-			'softwarerero:accounts-t9n@1.1.4'],
+      'aslagle:reactive-table',
+      'softwarerero:accounts-t9n@1.1.4'],
 		['client',
 			'server']);
 	api.use(['session'],['client']);
