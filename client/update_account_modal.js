@@ -32,6 +32,7 @@ Template.updateAccountModalInner.helpers({
 
 Template.updateAccountModalInner.events({
   'click .add-role': function (event, template) {
+    event.stopImmediatePropagation();
     var role = this.toString();
     var userId = event.currentTarget.getAttribute('data-user-id');
     Meteor.call('addUserRole', userId, role, function (error) {
@@ -50,6 +51,7 @@ Template.updateAccountModalInner.events({
   },
 
   'click .remove-role': function (event, template) {
+    event.stopImmediatePropagation();
     var role = this.toString();
     var userId = event.currentTarget.getAttribute('data-user-id');
 
@@ -75,24 +77,10 @@ Template.updateAccountModalInner.events({
     });
   },
 
-  'change .admin-user-info': function (event, template) {
-
-    var ele = event.currentTarget;
-    var userId = ele.getAttribute('data-user-id');
-
-    Meteor.call('updateUserInfo', userId, ele.name, ele.value, function (error) {
-      if (error) {
-        if (typeof Errors === "undefined") Log.error('Error: ' + error.reason);
-        else Errors.throw(error.reason);
-        return;
-      }
-      Session.set('userInScope', Meteor.users.findOne(userId));
-      Session.set("ACCOUNTS_ADMIN_SHOW_UPDATE_USER", false);
-    });
-  },
   'click .modal-close': function(event, template) {
+    event.stopImmediatePropagation();
     Session.set("ACCOUNTS_ADMIN_SHOW_UPDATE_USER", false);
-    $('#updateaccount').closeModal();
+    closeMaterializeModal($('#updateaccount'));
   }
 });
 

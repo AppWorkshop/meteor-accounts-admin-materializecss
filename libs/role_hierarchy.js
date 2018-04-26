@@ -32,6 +32,7 @@ RolesHierarchy = function (jsTree) {
 RolesHierarchy.prototype.findRoleInHierarchy = function (roleName) {
   // is it this one?
   if (this.roleName === roleName) {
+    // console.log(`RolesHierarchy(${roleName}): ${JSON.stringify(this,null,2)}`);
     return this;
   }
   // is it one of the immediate children of this one?
@@ -40,6 +41,7 @@ RolesHierarchy.prototype.findRoleInHierarchy = function (roleName) {
     for (let i = 0; !res && i < this.subordinates.length; i++) {
       res = this.subordinates[i].findRoleInHierarchy(roleName);
     }
+    // console.log(`this subordinate: ${JSON.stringify(res,null,2)}`);
     return res;
   }
 
@@ -55,6 +57,7 @@ RolesHierarchy.prototype.getRoleSubordinate = function (seniorRoleName, subordin
   // find the senior role in the hierarchy
   var seniorRole = this.findRoleInHierarchy(seniorRoleName);
   // see if the senior role has a subordinate matching the subordinate role
+  // console.log(`getRoleSubordinate(${seniorRoleName}, ${subordinateRoleName}): ${JSON.stringify(seniorRole.findRoleInHierarchy(subordinateRoleName),null,2)}`);
   return seniorRole.findRoleInHierarchy(subordinateRoleName);
 
 };
@@ -81,6 +84,7 @@ RolesHierarchy.prototype.getAllSubordinatesAsArray = function (seniorRoleName) {
       }
     subordinateRoles = _.flatten(subordinateRoles);
   }
+  // console.log(`subordinateRoles(${seniorRoleName}): ${JSON.stringify(subordinateRoles,null,2)}`);
   return subordinateRoles;
 };
 
@@ -111,6 +115,8 @@ RolesHierarchy.prototype.getAllMySubordinatesAsArray = function (myUserId) {
       }
     }
   }
+
+  // console.log(`rolesICanAdminister(${myUserId}): ${JSON.stringify(rolesICanAdminister,null,2)}`);
 
   return rolesICanAdminister;
 };
@@ -148,6 +154,8 @@ RolesHierarchy.prototype.getAllMyFieldsAsObject = function (myUserId) {
     }
   }
 
+  // console.log(`fieldsICanSee(${myUserId}): ${JSON.stringify(fieldsICanSee,null,2)}`);
+
   return fieldsICanSee;
 };
 
@@ -158,6 +166,7 @@ RolesHierarchy.prototype.getAllMyFieldsAsObject = function (myUserId) {
  */
 RolesHierarchy.prototype.isUserCanAdministerRole = function(userId, roleName) {
   var allSubordinateRoles = RolesTree.getAllMySubordinatesAsArray(userId);
+  // console.log(`isUserCanAdministerRole(roleName): ${JSON.stringify(_.contains(allSubordinateRoles, roleName),null,2)}`);
   return _.contains(allSubordinateRoles, roleName);
 };
 
@@ -181,7 +190,6 @@ RolesHierarchy.prototype.isUserCanAdministerUser= function(adminId, subordinateI
       }
     }
   }
-
   return false;
 };
 
@@ -218,6 +226,7 @@ RolesHierarchy.prototype.copyProfileCriteriaFromUser = function(meteorUser, prof
       }
     }
   }
+  // console.log(`profileFilterCriteria(${meteorUser}): ${JSON.stringify(profileFilterCriteria,null,2)}`);
   return profileFilterCriteria;
 };
 

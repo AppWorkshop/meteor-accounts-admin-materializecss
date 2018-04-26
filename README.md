@@ -229,11 +229,14 @@ var canIAdminister = RolesTree.isUserCanAdministerUser(Meteor.userId(),"baddeadb
 
 - ~~Implement UI to create/remove roles (currently done at Meteor.startup)~~ DONE
 - Configurable fields
-- Implement pagination (currently relies on search to find users)
+- ~~Implement pagination (currently relies on search to find users)~~
 - Write tests
 - User impersonation (for admins)
 
 ## History
+
+**Version:** 0.5.0
+- Refactor to use `aslagle:reactive-table` to provide paginated subscription and more robust searching.
 
 **Version:** 0.3.0
 - Filter on all fields specified in RolesTree 'visibleUserFields' property.

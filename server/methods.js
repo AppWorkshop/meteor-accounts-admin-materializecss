@@ -1,4 +1,140 @@
 Meteor.methods({
+
+  adminAccountsCreateUser: function (newUserObject, direct) {
+		var user = Meteor.user();
+
+		// ensure the user is logged in
+		if (!user) {
+			throw new Meteor.Error(401, "You need to login to create accounts");
+		}
+
+		// if the new user has roles, ensure they can be applied by the current user.
+		var thisUsersRoles = [];
+		if (newUserObject && newUserObject.roles) {
+			var newUsersRoles = newUserObject.roles;
+
+			// ensure that the user is allowed to assign the roles of the new user object
+			if (RolesTree) {
+				var rolesICanAdminister = RolesTree.getAllMySubordinatesAsArray(Meteor.userId());
+				// now, rolesICanAdminister contains an array of role names that I can administer. As long as all of the new
+				// users' roles are in the list, we can go ahead.
+				if (!_.every(newUsersRoles, function (thisRole) { // If I can't administer EVERY one of newUsersRoles ...
+						return _.contains(rolesICanAdminister, thisRole); // true if I can administer this role
+					})) {
+
+					throw new Meteor.Error(403, "You aren't allowed to assign one of the new users' roles.");
+				}
+			} else {
+				// ensure the user is an admin.
+				if (!Roles.userIsInRole(user, roles)) {
+					throw new Meteor.Error(403, "You don't have one of the required roles.");
+				}
+			}
+		} // no roles on this user object.
+
+		// copy all the specified profile data from MY user object. Copy all of the specified new-user roles for each one of
+		// MY roles.
+		var rolesForNewUser = [];
+		if (RolesTree) {
+			for (var roleIndex in user.roles) { // for each of my own roles
+				if (user.roles.hasOwnProperty(roleIndex)) {
+					// find this role in the hierarchy
+					var thisRole = RolesTree.findRoleInHierarchy(user.roles[roleIndex]);
+					if (thisRole) { // might not be in the hierarchy
+						if (thisRole.profileFilters && user.profile) { // copy ALL my roles' profile filters to the new user
+							// copy the profile filters
+							// loop through the profile filters (if any)
+							for (var filterIndex in thisRole.profileFilters) {
+								if (thisRole.profileFilters.hasOwnProperty(filterIndex)) {
+									var thisProfileFilter = thisRole.profileFilters[filterIndex];
+									// a profile filter is an array of property names to copy from the user's profile
+									if (user.profile.hasOwnProperty(thisProfileFilter)) { // Do I have the property on my own profile?
+										// OK let's copy it to our criteria
+										if (!newUserObject.profile) {
+											newUserObject.profile = {};
+										}
+
+										newUserObject.profile[thisProfileFilter] = user.profile[thisProfileFilter];
+									}
+								}
+							}
+
+						}
+						if (thisRole.defaultNewUserRoles) { // copy all of the default roles to the new user
+							// add all of the default new user roles to this user
+							rolesForNewUser = _.union(rolesForNewUser, thisRole.defaultNewUserRoles);
+							// get rid of "pending" if it's there
+							rolesForNewUser = _.without(rolesForNewUser,"self-registered");
+						}
+					}
+				}
+			}
+		} else {
+			if (typeof GetMeteorSettingsValue !== "undefined") {
+        rolesForNewUser = GetMeteorSettingsValue("juto.accountsAdminDefaultRoles");
+      } else if (Meteor.settings.juto && Meteor.settings.juto.accountsAdminDefaultRoles) {
+        rolesForNewUser = Meteor.settings.juto.accountsAdminDefaultRoles;
+			}
+		}
+
+		newUserObject.creationChannel = 'admin-accounts'; // so we can identify how this was created.
+		if (newUserObject.profile && newUserObject.profile.contactDetails && newUserObject.profile.contactDetails.emailAddress) {
+			newUserObject.email = newUserObject.profile.contactDetails.emailAddress;
+		}
+
+		var newID;
+		// console.log(`creating new user object: ${JSON.stringify(newUserObject,null,2)}`);
+		if (!direct) {
+			newID = Accounts.createUser(
+				newUserObject
+			);
+		} else {
+			// Insert directly
+			newID = Meteor.users.insert(newUserObject)
+		}
+
+		// add the user to the "teacher" role or other configured default roles
+		if (rolesForNewUser && rolesForNewUser.length) {
+			Roles.addUsersToRoles(newID, rolesForNewUser);
+		}
+
+		return newID;
+	},
+  adminAccountsUpdateUser: function(id, updDoc) {
+    var user = Meteor.user();
+    if (!user || (!RolesTree.isUserCanAdministerUser(user._id,id) && !Roles.userIsInRole(user, ['admin']))) {
+      throw new Meteor.Error(401, "You don't have privileges to update this user.");
+    }
+
+    Meteor.users.update({_id: id}, updDoc);
+
+  },
+  adminAccountsChangePasswordForUser: function (userId, newPassword) {
+    var user = Meteor.user();
+
+    // ensure the user is logged in
+    if (!user) {
+      throw new Meteor.Error(401, "You need to be logged in!");
+    }
+
+    var canAdminister = false;
+    if (RolesTree) {
+      if (RolesTree.isUserCanAdministerUser(user._id, userId)) {
+        canAdminister = true;
+      }
+    }
+
+    if (userId === user._id) { // if it's me
+      canAdminister = true; // I can change my own password
+    }
+
+    if (!canAdminister) {
+      throw new Meteor.Error(401, "You don't have permission to change this password");
+    }
+    if (Meteor.isServer) {
+      Accounts.setPassword(userId, newPassword, true);
+    }
+  },
 	deleteUser: function(userId) {
 		check(userId, String);
 
@@ -11,7 +147,7 @@ Meteor.methods({
       if (!user || !Roles.userIsInRole(user, ['admin']))
         throw new Meteor.Error(401, "You need to be an admin to delete a user.");
     }
-		if (user._id == userId)
+		if (user._id === userId)
 			throw new Meteor.Error(422, 'You can\'t delete yourself.');
 
 		// remove the user

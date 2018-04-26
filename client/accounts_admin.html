@@ -1,4 +1,5 @@
 <template name="accountsAdmin">
+  {{#with currentUser}}
   <div class="row valign-wrapper accounts-search">
     <div class="col s8 input-field no-margins">
       {{> reactiveTableFilter id="accountsAdminFilter" label="Filter" class="search-input-filter"}}
@@ -7,7 +8,7 @@
       <button class="btn-floating waves-effect waves-light brand-primary-bg" type="button">
         <i class="material-icons">search</i>
       </button>
-      {{#if isInSuperiorRole}}
+      {{#if canAddUsers}}
       {{!--
       <div class="col s1">
         <button class="btn btn-floating waves-effect waves-light modal-trigger" type="button" data-target="updateroles"
@@ -15,11 +16,7 @@
                 href="#updateroles"><i class="material-icons">settings</i></button>
       </div>
       --}}
-        <button class="btn-floating waves-effect waves-light modal-trigger brand-primary-bg" type="button" data-target="updateFilter"
-                id="updatefilterbtn"
-                href="#updateFilter">
-          <i class="material-icons">&#xE152;</i>
-        </button> <!-- filter_list -->
+
         <button class="btn-floating waves-effect waves-light modal-trigger brand-primary-bg" type="button" data-target="adduser"
                 id="adduserbtn"
                 href="#adduser">
@@ -28,33 +25,30 @@
       {{/if}}
     </div>
   </div>
-  {{> reactiveTable settings=(settings) class="highlight"}}
+  {{> reactiveTable settings=(settings) class="highlight" collection="filteredUsers"}}
   {{> updateRolesModal}}
   {{> deleteAccountModal}}
   {{> infoAccountModal}}
-  {{#if showUpdateModal}}
-    {{> updateAccountModal}}
-  {{/if}}
+  {{> updateAccountModal}}
   {{> resetPasswordModal}}
-  {{> filterModal}}
+  {{!--> filterModal--}}
   {{> adduserModal}}
+  {{/with}}
 </template>
 
 <template name="tableButtons">
   {{#unless isEqual _id currentUser._id}}
     <span data-target="deleteaccount" data-toggle="modal" href="#deleteaccount"
-          class="clickable removebtn {{modalTrigger}}"><i
+          class="clickable removebtn"><i
         class="material-icons red-text">remove_circle_outline</i></span>
 
-    <span data-toggle="modal" href="#updateaccount" class="clickable editbtn {{modalTrigger}}"><i
-        class="material-icons brand-primary-color">&#xE254;</i></span> <!-- mode_edit -->
-
-    {{#if canResetPasswords}}
-      <span data-toggle="modal" href="#resetPassword" class="clickable passwordbtn {{modalTrigger}}"><i
-          class="material-icons brand-primary-color">&#xE899;</i></span> <!-- lock_outline -->
-    {{/if}}
-
   {{/unless}}
-  <span data-toggle="modal" href="#infoaccount" class="clickable infobtn {{modalTrigger}}"><i
+  {{#if canResetPasswords}}
+    <span data-toggle="modal" href="#resetPassword" class="clickable passwordbtn"><i
+        class="material-icons brand-primary-color">&#xE899;</i></span> <!-- lock_outline -->
+  {{/if}}
+  <span data-toggle="modal" href="#updateaccount" class="clickable editbtn"><i
+      class="material-icons brand-primary-color">&#xE254;</i></span> <!-- mode_edit -->
+  <span data-toggle="modal" href="#infoaccount" class="clickable infobtn"><i
       class="material-icons brand-primary-color">&#xE88F;</i></span> <!-- info_outline -->
 </template>

@@ -14,15 +14,15 @@ Meteor.publish('roles', function () {
   return Meteor.roles.find(criteria);
 });
 
-ReactiveTable.publish('filteredUsers', function (searchString, searchCriteriaObject) {
-  check(searchString, Match.OneOf(String, undefined, null));
-  check(searchCriteriaObject, Match.OneOf(Object, undefined, null));
+ReactiveTable.publish('filteredUsers', Meteor.users, function () {
+  // console.log("filteredUsers publish...");
 
   var rolesCriteria;
   var profileFilterCriteria;
 
   var myUserId = this.userId;
   if (myUserId) { // user is logged in
+    // console.log("user is logged in: " + this.userId);
     var fields;
     // if we have a roles hierarchy, then only show users in subordinate roles
     // This user can see all of the roles it can administer, or all roles if no roles hierarchy is defined.
@@ -47,19 +47,22 @@ ReactiveTable.publish('filteredUsers', function (searchString, searchCriteriaObj
         "_id": 1,
         "username": 1,
         "profile.name": 1,
+        "profile.firstname": 1,
+        "profile.surname": 1,
+        "profile.contactDetails": 1,
         "roles": 1,
         "emails": 1
       };
 
 
-    //console.log("profileFilterCriteria: " + JSON.stringify(profileFilterCriteria));
-    //console.log("myUserId: " + myUserId);
-    //console.log("filter: " + JSON.stringify(filter));
-    //console.log("rolesCriteria: " + JSON.stringify(rolesCriteria));
-    //console.log("profileFilterCriteria: " + JSON.stringify(profileFilterCriteria));
+    // console.log("profileFilterCriteria: " + JSON.stringify(profileFilterCriteria));
+    // console.log("myUserId: " + myUserId);
+    // console.log("rolesCriteria: " + JSON.stringify(rolesCriteria));
+    // console.log("profileFilterCriteria: " + JSON.stringify(profileFilterCriteria));
 
-    return filteredUserQuery(myUserId, searchString, searchCriteriaObject, fields, rolesCriteria, profileFilterCriteria);
+    return getFilteredUserQueryCriteria(myUserId, undefined, undefined, fields, rolesCriteria, profileFilterCriteria);
   } else {
+    // console.log("no userid");
     this.stop();
   }
 });

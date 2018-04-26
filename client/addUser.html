@@ -1,0 +1,105 @@
+<template name="adduserModal">
+  <div id="adduser" class="modal fade" tabindex="-1">
+    {{> adduserModalInner}}
+  </div>
+</template>
+
+<template name="adduserModalInner">
+  <div class="modal-content">
+    <h5 class="aau-header">Add User</h5>
+    <!-- aau = admin add user -->
+    <div class="row">
+      <form id="aau-form" class="col s12">
+        {{#if isInRole "est-admin"}}
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" id="aau-first-name-input" class="first-name-input" value=""
+                     autocapitalize="none"
+                     autocorrect="off" required/>
+              <div class="hidden">
+                <i class="fa fa-times"></i>
+                <span class="red-text ">Required Field</span>
+              </div>
+              <label for="aau-first-name-input" id="aau-first-name-label">EST Region Name</label>
+            </div>
+          </div>
+        {{else}}
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" id="aau-first-name-input" class="first-name-input" value=""
+                     autocapitalize="none"
+                     autocorrect="off" required/>
+              <div class="hidden">
+                <i class="fa fa-times"></i>
+                <span class="red-text ">Required Field</span>
+              </div>
+              <label for="aau-first-name-input" id="aau-first-name-label">First Name</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" id="aau-surname-input" class="surname-input" value="" autocapitalize="none"
+                     autocorrect="off" required/>
+              <div class="hidden">
+                <i class="fa fa-times"></i>
+                <span class="red-text ">Required Field</span>
+              </div>
+              <label for="aau-surname-input" id="aau-surname-label">Surname</label>
+            </div>
+          </div>
+        {{/if}}
+
+        <div class="row">
+          <div class="input-field col s12">
+            <input type="text" id="aau-username-input" class="add-user-input" value="" autocapitalize="none"
+                   autocorrect="off" required/>
+            <div class="hidden">
+              <i class="fa fa-times"></i>
+              <span class="red-text ">Required Field</span>
+            </div>
+            <label for="aau-username-input" id="aau-username-label">Username</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input type="password" id="aau-password-input" class="password-input" value="" autocapitalize="none"
+                   autocorrect="off" required/>
+            <div class="hidden">
+              <i class="fa fa-times"></i>
+              <span class="red-text ">Required Field</span>
+            </div>
+            <label for="aau-password-input" id="aau-password-label">Password</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input type="tel" id="aau-phone-input" class="aau-phone-input" value="" autocapitalize="none"
+                   autocorrect="off" pattern="[0-9]{10}"/>
+            <div class="hidden">
+              <i class="fa fa-times"></i>
+              <span class="red-text ">Required Field</span>
+            </div>
+            <label for="aau-phone-input">Mobile Phone (10 digits)</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input type="email" id="aau-email-input" class="aau-email-input" value="" autocapitalize="none"
+                   autocorrect="off"/>
+            <div class="hidden">
+              <i class="fa fa-times"></i>
+              <span class="red-text ">Required Field</span>
+            </div>
+            <label for="aau-email-input" id="aau-email-label">Email</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+        <a href="#!" class=" modal-action modal-close waves-effect waves-light btn-flat"><!--{{t9n "Cancel"}}-->Cancel<i
+            class="material-icons">cancel</i></a>
+        <button type="button" class="aau-button btn waves-effect waves-light">Add User<i class="material-icons">add</i>
+        </button>
+      </div>
+    </form>
+    </div>
+  </div>
+</template>

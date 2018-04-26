@@ -11,16 +11,53 @@
     <div class="modal-body">
       <h5>{{t9n "update"}} {{email}}</h5>
 
-      <form class="col s12">
-        <div class="row">
-          <div class="input-field">
+      <div class="card-panel">
+        <div class="card-content">
+          <div class="card-title">
+            Profile
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" name="profile.firstname" required="" id="profile-firstname" value="{{profile.firstname}}">
+              <label for="profile-firstname" class="active">
+                First Name
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" name="profile.surname" required="" id="profile-surname" value="{{profile.surname}}">
+              <label for="profile-surname" class="active">
+                Surname
+              </label>
+            </div>
+          </div>
 
-            <input id="profile.name" data-user-id="{{_id}}" class="admin-user-info" name="profile.name"
-                   value="{{profile.name}}" placeholder="{{profile.name}}" type="text">
-            <label for="profile.name" class="active">{{t9n "Name"}}</label>
+          <div class="card-panel autoform-object-field">
+            <div class="card-content">
+              <div class="card-title">
+                Contact Details
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" name="profile.contactDetails.mobilePhone" id="profile-contactDetails-mobilePhone" value="{{profile.contactDetails.mobilePhone}}">
+                  <label for="profile-contactDetails-mobilePhone" class="active">
+                    Mobile
+                  </label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                  <input type="text" name="profile.contactDetails.emailAddress" id="profile-contactDetails-emailAddress" value="{{profile.contactDetails.emailAddress}}">
+                  <label for="profile-contactDetails-emailAddress" class="active">
+                    E-mail
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </form>
+      </div>
       {{#if roles}}
         <ul class="collection">
           <li class="collection-header">{{t9n "AssignedRoles"}}:</li>
