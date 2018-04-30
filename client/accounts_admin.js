@@ -4,8 +4,12 @@ var getUsers = function() {
   if (RolesTree) {
     configuredFields = RolesTree.getAllMyFieldsAsObject(Meteor.userId());
     profileFilterCriteria = RolesTree.copyProfileCriteriaFromUser(Meteor.user(),{});
+    // console.log(`configuredFields: ${JSON.stringify(configuredFields,null,2)}`);
+    // console.log(`profileFilterCriteria: ${JSON.stringify(profileFilterCriteria,null,2)}`);
 
   }
+  // console.log(`userFilter: ${JSON.stringify(Session.get("userFilter"),null,2)}`);
+  // console.log(`userFilterCriteria: ${JSON.stringify(Session.get("userFilterCriteria"),null,2)}`);
   return filteredUserQuery(Meteor.userId(), Session.get("userFilter"), Session.get("userFilterCriteria"), configuredFields, undefined, profileFilterCriteria);
 
 };
@@ -37,9 +41,40 @@ Template.accountsAdmin.helpers({
   searchFilter: function () {
     return Session.get("userFilter");
   },
-
   myself: function (userId) {
     return Meteor.userId() === userId;
+  },
+  canAddUsers() {
+    if (RolesTree) { // can add users if I have subordinate roles
+      return !_.isEmpty(RolesTree.getAllMySubordinatesAsArray(Meteor.userId()));
+    } else {
+      return (Roles.userIsInRole(Meteor.userId(), ["admin"]))
+    }
+  },
+  settings() {
+    return {
+      rowsPerPage: 15,
+      showNavigation: "auto",
+      multiColumnSort: false,
+      filters: ["accountsAdminFilter"],
+      fields: [
+        {
+          key: 'buttons',
+          label: '',
+          tmpl: Template.tableButtons
+        },
+        {key: 'createdAt', hidden: true, sortOrder: 0, sortDirection: 'ascending' },
+        {key: 'roles', label: 'Roles'},
+        {key: 'profile.firstname', label: 'First Name'},
+        {key: 'profile.surname', label: 'Surname'},
+        {key: 'username', label: 'Username'},
+        {key: 'emails.0.address', label: 'Email'}
+      ]
+    };
+  },
+  showUpdateModal() {
+    // console.log("showUpdateModal helper");
+    return Session.get("ACCOUNTS_ADMIN_SHOW_UPDATE_USER");
   }
 });
 
@@ -54,52 +89,90 @@ Template.accountsAdmin.events({
     setUserFilter(template);
     return false;
   },
-
+  // 'click .reactive-table tbody tr': function (event) {
+  //   Session.set('userInScope', this);
+  //   openMaterializeModal($('#infoaccount'));
+  // },
   'click .removebtn': function (event, template) {
+    event.stopImmediatePropagation();
     Session.set('userInScope', this);
-    $('#deleteaccount').modal('open');
+    openMaterializeModal($('#deleteaccount'));
   },
 
   'click .infobtn': function (event, template) {
+    event.stopImmediatePropagation();
     Session.set('userInScope', this);
-    $('#infoaccount').modal('open');
+    openMaterializeModal($('#infoaccount'));
   },
 
   'click .editbtn': function (event, template) {
+    event.stopImmediatePropagation();
     Session.set('userInScope', this);
-    $('#updateaccount').modal('open');
+    Session.set("ACCOUNTS_ADMIN_SHOW_UPDATE_USER", true);
+    openMaterializeModal($('#updateaccount'));
   },
   'click #updaterolesbtn': function(event, template) {
-    $('#updateroles').modal('open');
+    openMaterializeModal($('#updateroles'));
+  },
+  'click #adduserbtn': function () {
+    openMaterializeModal($('#adduser'));
+  },
+  'click .passwordbtn': function (event, template) {
+    event.stopImmediatePropagation();
+    Session.set('userInScope', this);
+    openMaterializeModal($('#resetPassword'));
+  },
+  'click #updatefilterbtn': function () {
+    openMaterializeModal($('#updateFilter'));
   }
 });
 
 Template.accountsAdmin.onCreated(function () {
+  Session.set("ACCOUNTS_ADMIN_SHOW_UPDATE_USER", false);
   this.subscribe('roles');
-  this.autorun(function (computation) {
-    Meteor.subscribe('filteredUsers', Session.get('userFilter'), Session.get('userFilterCriteria'), {
-      'onReady': function () {},
-      'onStop': function (error) {
-        if (error) console.error(error);
-      }
-    });
-  });
+
 });
 
 Template.accountsAdmin.onRendered(function () {
-  var searchElement = document.getElementsByClassName('search-input-filter');
-  if (!searchElement)
-    return;
-  var filterValue = Session.get("userFilter");
+  // allow materialize modals in pre-0.100 $("#modal").openModal() fashion, and post-0.100 $("#modal").modal('open').
+  initializeMaterializeModalMode();
+  if (isNewMaterializeModalMode) {
+    // need to initialize modals
+    $('#deleteaccount').modal();
+    $('#infoaccount').modal();
+    $('#updateaccount').modal();
+    $('#updateroles').modal();
+    $('#adduser').modal();
+    $('#resetPassword').modal();
+    $('#updateFilter').modal();
+  }
 
-  var pos = 0;
-  if (filterValue)
-    pos = filterValue.length;
+});
 
-  searchElement[0].focus();
-  searchElement[0].setSelectionRange(pos, pos);
-  $('#deleteaccount').modal();
-  $('#infoaccount').modal();
-  $('#updateaccount').modal();
-  $('#updateroles').modal();  
+Template.accountsAdmin.onDestroyed(function(){
+  if (isNewMaterializeModalMode) {
+    // need to initialize modals
+    $('#deleteaccount').modal();
+    $('#infoaccount').modal();
+    $('#updateaccount').modal();
+    $('#updateroles').modal();
+    $('#adduser').modal();
+    $('#resetPassword').modal();
+    $('#updateFilter').modal();
+  }
+});
+
+Template["tableButtons"].helpers({
+  canResetPasswords() { // can reset passwords if I have subordinate roles
+
+    return true;
+    // if (RolesTree) { // can reset passwords if I have subordinate roles
+    //   return !_.isEmpty(RolesTree.getAllMySubordinatesAsArray(Meteor.userId()));
+    // } else {
+    //   return (Roles.userIsInRole(Meteor.userId(), ["admin"]))
+    // }
+  },
+  isEqual(value1, value2) {
+    return (value1 === value2);
+  }
 });
