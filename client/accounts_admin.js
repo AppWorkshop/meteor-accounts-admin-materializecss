@@ -55,6 +55,7 @@ Template.accountsAdmin.helpers({
     return {
       rowsPerPage: 15,
       showNavigation: "auto",
+      multiColumnSort: false,
       filters: ["accountsAdminFilter"],
       fields: [
         {
@@ -67,7 +68,7 @@ Template.accountsAdmin.helpers({
         {key: 'profile.firstname', label: 'First Name'},
         {key: 'profile.surname', label: 'Surname'},
         {key: 'username', label: 'Username'},
-        {key: 'email.0.address', label: 'Email'}
+        {key: 'emails.0.address', label: 'Email'}
       ]
     };
   },
@@ -146,17 +147,6 @@ Template.accountsAdmin.onRendered(function () {
     $('#updateFilter').modal();
   }
 
-  let searchElement = document.getElementsByClassName('reactive-table-input');
-  if (!searchElement)
-    return;
-  let filterValue = Session.get("userFilter");
-
-  let pos = 0;
-  if (filterValue)
-    pos = filterValue.length;
-
-  searchElement[0].focus();
-  searchElement[0].setSelectionRange(pos, pos);
 });
 
 Template.accountsAdmin.onDestroyed(function(){

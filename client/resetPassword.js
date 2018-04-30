@@ -28,10 +28,10 @@ Template.resetPasswordModalInner.events({
       setSuccess(repeatPasswordField);
       var userInScope = Session.get("userInScope");
       Meteor.call('adminAccountsChangePasswordForUser',userInScope._id, passwordField.value);
-      $('#resetPassword').closeModal();
+      closeMaterializeModal($("#resetPassword"));
     }
   },
   'click .modal-close': function() {
-    $('#resetPassword').closeModal();
+    closeMaterializeModal($("#resetPassword"));
   }
 });

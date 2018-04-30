@@ -22,7 +22,10 @@ Package.on_use(function (api, where) {
       'softwarerero:accounts-t9n@1.1.4'],
     ['client',
       'server']);
-  api.use(['session'], ['client']);
+  api.use([
+    'gfk:underscore-deep',
+    'session'
+  ], ['client']);
 
   api.addFiles(['libs/t9n/en.coffee', 'libs/t9n/id.coffee'], 'client');
   api.addFiles('libs/role_hierarchy.js', ['client', 'server']);

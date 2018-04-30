@@ -1,38 +1,40 @@
 <template name="accountsAdmin">
   {{#with currentUser}}
-  <div class="row valign-wrapper accounts-search">
-    <div class="col s8 input-field no-margins">
-      {{> reactiveTableFilter id="accountsAdminFilter" label="Filter" class="search-input-filter"}}
-    </div>
-    <div class="">
-      <button class="btn-floating waves-effect waves-light brand-primary-bg" type="button">
-        <i class="material-icons">search</i>
-      </button>
-      {{#if canAddUsers}}
-      {{!--
-      <div class="col s1">
-        <button class="btn btn-floating waves-effect waves-light modal-trigger" type="button" data-target="updateroles"
-                id="updaterolesbtn"
-                href="#updateroles"><i class="material-icons">settings</i></button>
+    <div class="container">
+    <div class="row valign-wrapper accounts-search">
+      <div class="col s8 input-field no-margins">
+        {{> reactiveTableFilter id="accountsAdminFilter" label="Filter" class="search-input-filter"}}
       </div>
-      --}}
+      <div class="">
+        <button class="btn-floating waves-effect waves-light brand-primary-bg" type="button">
+          <i class="material-icons">search</i>
+        </button>
+        {{#if canAddUsers}}
+        {{!--
+        <div class="col s1">
+          <button class="btn btn-floating waves-effect waves-light modal-trigger" type="button" data-target="updateroles"
+                  id="updaterolesbtn"
+                  href="#updateroles"><i class="material-icons">settings</i></button>
+        </div>
+        --}}
 
-        <button class="btn-floating waves-effect waves-light modal-trigger brand-primary-bg" type="button" data-target="adduser"
-                id="adduserbtn"
-                href="#adduser">
-          <i class="material-icons">&#xE148;</i>
-        </button> <!-- add_circle_outline -->
-      {{/if}}
+          <button class="btn-floating waves-effect waves-light modal-trigger brand-primary-bg" type="button" data-target="adduser"
+                  id="adduserbtn"
+                  href="#adduser">
+            <i class="material-icons">&#xE148;</i>
+          </button> <!-- add_circle_outline -->
+        {{/if}}
+      </div>
     </div>
-  </div>
-  {{> reactiveTable settings=(settings) class="highlight" collection="filteredUsers"}}
-  {{> updateRolesModal}}
-  {{> deleteAccountModal}}
-  {{> infoAccountModal}}
-  {{> updateAccountModal}}
-  {{> resetPasswordModal}}
-  {{!--> filterModal--}}
-  {{> adduserModal}}
+      {{> reactiveTable settings=(settings) class="highlight" collection="filteredUsers"}}
+    </div>
+    {{> updateRolesModal}}
+    {{> deleteAccountModal}}
+    {{> infoAccountModal}}
+    {{> updateAccountModal}}
+    {{> resetPasswordModal}}
+    {{!--> filterModal--}}
+    {{> adduserModal}}
   {{/with}}
 </template>
 

@@ -58,35 +58,37 @@
           </div>
         </div>
       </div>
-      {{#if roles}}
-        <ul class="collection">
-          <li class="collection-header">{{t9n "AssignedRoles"}}:</li>
-          {{#each roles}}
-            <li class="collection-item">
-              <span data-user-id="{{../_id}}" class="clickable remove-role waves-effect waves-light">
-                <i class="material-icons">remove_circle_outline</i>
-              </span>
-              <span class="right-align">{{t9n this}}</span>
-            </li>
-          {{/each}}
-        </ul>
-      {{else}}
-        {{t9n "This account has no roles"}}.
-      {{/if}}
-      {{#if unsetRoles}}
-        <ul class="collection">
-          <li class="collection-header">{{t9n "AddRoleToUser"}}:</li>
-          {{#each unsetRoles}}
-            <li class="collection-item">
-              <span data-user-id="{{../_id}}" class="clickable addbtn add-role waves-effect waves-light">
-                <i class="material-icons">add_circle_outline</i>
-              </span>
-              <span class="right-align">{{this}}</span>
-            </li>
-          {{/each}}
-        </ul>
-      {{else}}
-        <em>{{t9n "All roles have already been set"}}</em>
+      {{#if notMe}}
+        {{#if roles}}
+          <ul class="collection">
+            <li class="collection-header">{{t9n "AssignedRoles"}}:</li>
+            {{#each roles}}
+              <li class="collection-item">
+                <span data-user-id="{{../_id}}" class="clickable remove-role waves-effect waves-light">
+                  <i class="material-icons">remove_circle_outline</i>
+                </span>
+                <span class="right-align">{{t9n this}}</span>
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          {{t9n "This account has no roles"}}.
+        {{/if}}
+        {{#if unsetRoles}}
+          <ul class="collection">
+            <li class="collection-header">{{t9n "AddRoleToUser"}}:</li>
+            {{#each unsetRoles}}
+              <li class="collection-item">
+                <span data-user-id="{{../_id}}" class="clickable addbtn add-role waves-effect waves-light">
+                  <i class="material-icons">add_circle_outline</i>
+                </span>
+                <span class="right-align">{{this}}</span>
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          <em>{{t9n "All roles have already been set"}}</em>
+        {{/if}}
       {{/if}}
       <div class="modal-footer">
         <button type="button" class="btn waves-effect waves-light modal-action modal-close">{{t9n "Done"}}</button>
