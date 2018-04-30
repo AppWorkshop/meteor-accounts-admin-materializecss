@@ -1,58 +1,56 @@
 <template name="accountsAdmin">
-  <div class="row accounts-search">
-    <div class="col s6">
-      <input type="text" class="form-control search-input-filter" value="{{searchFilter}}" id="searchFilter">
-      <label for="searchFilter">{{t9n "Filter"}}</label>
-    </div>
-    <div class="col s2">
-      <button class="btn btn-floating waves-effect waves-light" type="button"><i class="material-icons">search</i></button>
-    </div>
-    <div class="col s3 offset-s1">
-    <button class="btn waves-effect waves-light modal-trigger full-width" type="button" data-target="updateroles" id="updaterolesbtn"
-            href="#updateroles">Manage Roles
-    </button>
-    </div>
-  </div>
+  {{#with currentUser}}
+    <div class="container">
+    <div class="row valign-wrapper accounts-search">
+      <div class="col s8 input-field no-margins">
+        {{> reactiveTableFilter id="accountsAdminFilter" label="Filter" class="search-input-filter"}}
+      </div>
+      <div class="">
+        <button class="btn-floating waves-effect waves-light brand-primary-bg" type="button">
+          <i class="material-icons">search</i>
+        </button>
+        {{#if canAddUsers}}
+        {{!--
+        <div class="col s1">
+          <button class="btn btn-floating waves-effect waves-light modal-trigger" type="button" data-target="updateroles"
+                  id="updaterolesbtn"
+                  href="#updateroles"><i class="material-icons">settings</i></button>
+        </div>
+        --}}
 
-  <table class='responsive-table highlight'>
-    <thead>
-    <tr>
-      <th>&nbsp;</th>
-      <th data-field="profile.name">{{t9n "Name"}}</th>
-      <th data-field="email">{{t9n "email"}}</th>
-      <th data-field="username">{{t9n "username"}}</th>
-      <th data-field="roles">{{t9n "Roles"}}</th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#each users}}
-      <tr class="{{#if myself _id}}info{{/if}}">
-        <td>
-          {{#unless myself _id}}
-            <span data-target="deleteaccount" data-toggle="modal" href="#deleteaccount"
-                  class="clickable removebtn modal-trigger"><i class="material-icons">remove_circle_outline</i></span>
-            <span data-toggle="modal" href="#updateaccount" class="clickable editbtn modal-trigger"><i
-                class="material-icons">mode_edit</i></span>
-            <span data-toggle="modal" href="#infoaccount" class="clickable infobtn modal-trigger"><i
-                class="material-icons">info_outline</i></span>
-          {{/unless}}
-        </td>
-        <td>
-          {{#if profile.name}}
-            {{profile.name}}
-          {{else}}
-            {{email}}
-          {{/if}}
-        </td>
-        <td>{{email}}</td>
-        <td>{{username}}</td>
-        <td>{{roles}}</td>
-      </tr>
-    {{/each}}
-    </tbody>
-  </table>
-  {{> updateRolesModal}}
-  {{> deleteAccountModal}}
-  {{> infoAccountModal}}
-  {{> updateAccountModal}}
+          <button class="btn-floating waves-effect waves-light modal-trigger brand-primary-bg" type="button" data-target="adduser"
+                  id="adduserbtn"
+                  href="#adduser">
+            <i class="material-icons">&#xE148;</i>
+          </button> <!-- add_circle_outline -->
+        {{/if}}
+      </div>
+    </div>
+      {{> reactiveTable settings=(settings) class="highlight" collection="filteredUsers"}}
+    </div>
+    {{> updateRolesModal}}
+    {{> deleteAccountModal}}
+    {{> infoAccountModal}}
+    {{> updateAccountModal}}
+    {{> resetPasswordModal}}
+    {{!--> filterModal--}}
+    {{> adduserModal}}
+  {{/with}}
+</template>
+
+<template name="tableButtons">
+  {{#unless isEqual _id currentUser._id}}
+    <span data-target="deleteaccount" data-toggle="modal" href="#deleteaccount"
+          class="clickable removebtn"><i
+        class="material-icons red-text">remove_circle_outline</i></span>
+
+  {{/unless}}
+  {{#if canResetPasswords}}
+    <span data-toggle="modal" href="#resetPassword" class="clickable passwordbtn"><i
+        class="material-icons brand-primary-color">&#xE899;</i></span> <!-- lock_outline -->
+  {{/if}}
+  <span data-toggle="modal" href="#updateaccount" class="clickable editbtn"><i
+      class="material-icons brand-primary-color">&#xE254;</i></span> <!-- mode_edit -->
+  <span data-toggle="modal" href="#infoaccount" class="clickable infobtn"><i
+      class="material-icons brand-primary-color">&#xE88F;</i></span> <!-- info_outline -->
 </template>

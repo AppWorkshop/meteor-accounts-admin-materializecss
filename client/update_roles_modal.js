@@ -63,6 +63,6 @@ Template.updateRolesModalInner.events({
 		}
 	},
   'click .modal-close': function(event, template) {
-    $('#updateroles').closeModal();
+    closeMaterializeModal($('#updateroles'));
   }
 });

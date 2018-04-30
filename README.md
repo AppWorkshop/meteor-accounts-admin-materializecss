@@ -4,16 +4,11 @@ A roles based account management system using [materialize css](http://materiali
 
 This is a fork of the [Bootstrap version](https://github.com/hharnisc/meteor-accounts-admin-ui-bootstrap-3).
 
-## Screenshots
+## Screen Recording
 
-List users:
-![list users](https://cloud.githubusercontent.com/assets/1751645/10537096/33cee48c-7422-11e5-9384-e0267e496335.png)
+The screen recording below should give you an idea of what this does. 
 
-Update users:
-![update user](https://cloud.githubusercontent.com/assets/1751645/10537097/33cf7d84-7422-11e5-90c9-31c92099e71c.png)
-
-New role:
-![new role](https://cloud.githubusercontent.com/assets/1751645/10537095/33cc7ec2-7422-11e5-91c4-a35c8a2b7052.png)
+![accounts-admin-demo](https://user-images.githubusercontent.com/1751645/39414333-dc88989a-4c68-11e8-85cf-83e6a794c34c.gif)
 
 **Table of Contents**
 
@@ -27,123 +22,40 @@ New role:
 
 ## Quick Start
 
-Set up a simple admin page
+Take a look at the [example meteor app](https://github.com/AppWorkshop/meteor-accounts-admin-materializecss-example) :
 
 ```sh
-$ meteor create app
-$ cd app
-$ meteor add accounts-password
-$ meteor add alanning:roles
-$ meteor add materialize:materialize
-$ meteor add useraccounts:materialize
-$ meteor add cunneen:accounts-admin-materializecss # <=== this package!
-$ meteor remove autopublish
-$ meteor remove insecure
+git clone https://github.com/AppWorkshop/meteor-accounts-admin-materializecss-example admin-example
+cd admin-example
+meteor npm install
+meteor --settings settings.json
 ```
 
-**app.js**
-```javascript
-if (Meteor.isServer) {
-	Meteor.startup(function () {
-		// bootstrap the admin user if they exist -- You'll be replacing the id later
-		if (Meteor.users.findOne("your_admin_user_id"))
-			Roles.addUsersToRoles("your_admin_user_id", ['admin']);
+You need to create a new user and then set the 'admin' role to that user. E.g. :
 
-		// create a couple of roles if they don't already exist (THESE ARE NOT NEEDED -- just for the demo)
-		if(!Meteor.roles.findOne({name: "secret"}))
-            Roles.createRole("secret");
-
-        if(!Meteor.roles.findOne({name: "double-secret"}))
-            Roles.createRole("double-secret");
-	});
-}
-
-if (Meteor.isClient) {
-	Template.adminTemplate.helpers({
-		// check if user is an admin
-		isAdminUser: function() {
-			return Roles.userIsInRole(Meteor.user(), ['admin']);
-		}
-	})
-}
+```sh
+meteor shell
+> let userid = Accounts.createUser({ 
+    username: 'admin', 
+    email: 'admin@example.com', 
+    password: 'password123', 
+    profile: { 
+      firstname: 'Admin', 
+      surname: 'User', 
+      contactDetails: { 
+        mobilePhone: '0411111111', 
+        emailAddress: 'admin@example.com' 
+      }
+    }
+  });
+  Roles.addUsersToRoles(userid, ["admin"]);
 ```
 
-**app.html**
-```html
-<head>
-  <title>Accounts Admin</title>
-</head>
+## Router Integration
 
-<body>
-	<div class="navbar navbar-default" role="navigation">
-        <div class="navbar-header">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/">Accounts Admin</a>
-            </div>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">  
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-            {{> loginButtons }}
-            </ul>
-        </div>
-    </div>
-    <div class="container">
-		{{> adminTemplate}}
-	</div>
-</body>
+This tool plays nicely with FlowRouter or Iron Router.
 
-<template name="adminTemplate">
-	{{#if isAdminUser}}
-		{{> accountsAdmin}}
-	{{else}}
-		Must be admin to see this...
-	{{/if}}
-</template>
-```
-
-After you edit app.js and app.html you need to create a new user and then set the 'admin' role to that user.
-
-1. Go to [http://localhost:3000](http://localhost:3000) and click on the "Sign In / Up" and create your user there.
-2. In the browser console grab the user id from the user you just created Meteor.userId()
-3. Copy the user id and paste it into to "your_admin_user_id" in app.js created above.
-4. Restart meteor 
-
-At this point you should see the UI.  Signout and add a few more users so you can play with the roles. You can add and 
-remove roles all through the UI.
-
-## Iron Router Integration
-
-This tool plays nice with Iron Router package, add to following configuration to your router.
-Or take a look at this [working example](https://github.com/hharnisc/meteor-accounts-admin-ui-bootstrap-3-demo).
-
-**router.js**
-```javascript
-Router.configure({
-	layoutTemplate: 'layout'
-});
-
-Router.map(function() {
-	this.route('home', {
-		path: '/',
-		template: 'home'
-	});
-
-	this.route('admin', {
-		path:'/admin',
-		template: 'accountsAdmin',
-		onBeforeAction: function() {
-			if (Meteor.loggingIn()) {
-                this.render(this.loadingTemplate);
-            } else if(!Roles.userIsInRole(Meteor.user(), ['admin'])) {
-                console.log('redirecting');
-                this.redirect('/');
-            }
-		}
-	});
-});
-```
+Effectively, it just defines a `accountsAdmin` Spacebars template, so you can attach it to a route as you please.
 
 ## Roles Hierarchy
 
@@ -229,11 +141,14 @@ var canIAdminister = RolesTree.isUserCanAdministerUser(Meteor.userId(),"baddeadb
 
 - ~~Implement UI to create/remove roles (currently done at Meteor.startup)~~ DONE
 - Configurable fields
-- Implement pagination (currently relies on search to find users)
+- ~~Implement pagination (currently relies on search to find users)~~
 - Write tests
 - User impersonation (for admins)
 
 ## History
+
+**Version:** 0.5.0
+- Refactor to use `aslagle:reactive-table` to provide paginated subscription, more robust searching and an example app.
 
 **Version:** 0.3.0
 - Filter on all fields specified in RolesTree 'visibleUserFields' property.
