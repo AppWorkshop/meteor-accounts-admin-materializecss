@@ -23,7 +23,7 @@ Package.on_use(function (api, where) {
     ['client',
       'server']);
   api.use([
-    'gfk:underscore-deep',
+    'gfk:underscore-deep@1.0.0',
     'session'
   ], ['client']);
 
