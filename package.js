@@ -13,12 +13,12 @@ Package.on_use(function (api, where) {
   api.use([
       "ecmascript",
       "alanning:roles@1.2.8",
-      'coffeescript',
-      'templating',
+      'coffeescript@1.0.17',
+      'templating@1.1.14',
       'check',
       'underscore',
       'logging',
-      'aslagle:reactive-table',
+      'aslagle:reactive-table@0.8.44',
       'softwarerero:accounts-t9n@1.1.4'],
     ['client',
       'server']);
