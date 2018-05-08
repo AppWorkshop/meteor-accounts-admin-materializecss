@@ -133,9 +133,18 @@ Meteor.methods({
       newDoc["emails.0.address"] = _.deepPickValue(newDoc, "profile.contactDetails.emailAddress");
     }
 
-    console.log(`Meteor.users.update({_id: ${id}, {$set: ${JSON.stringify(newDoc, null, 2)});`);
-    Meteor.users.update({_id: id}, {$set: newDoc});
-    return newDoc;
+    return new Promise((resolve,reject)=> {
+
+      console.log(`Meteor.users.update({_id: ${id}, {$set: ${JSON.stringify(newDoc, null, 2)});`);
+      Meteor.users.update({_id: id}, {$set: newDoc},(error,result)=>{
+        if (error) {
+          console.error(error);
+          reject(new Meteor.Error("update-error","Couldn't update user",error.message));
+        } else {
+          resolve(result);
+        }
+      });
+    });
   },
   adminAccountsChangePasswordForUser: function (userId, newPassword) {
     var user = Meteor.user();
